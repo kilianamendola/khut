@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Hut Menuiserie</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Mono', monospace;
+            background-color: #e8e8e8;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Home Section - Fixed in place */
+        .home-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            z-index: 1;
+            background-color: #e8e8e8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0;
+            margin-left: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: start;
+            min-height: 80vh;
+        }
+
+        .left-section {
+            padding-right: 0;
+        }
+
+        .right-section {
+            padding-left: 40px;
+        }
+
+        .definition {
+            margin-bottom: 40px;
+        }
+
+        .word-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .word-title .pronunciation {
+            font-weight: normal;
+            color: #666;
+        }
+
+        .word-meaning {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .poetry {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 50px;
+        }
+
+        .menuiserie-section h2 {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .service-buttons {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 50px;
+        }
+
+        .service-pill {
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-family: 'DM Mono', monospace;
+            display: inline-block;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Logo - ALWAYS VISIBLE */
+        .logo-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            pointer-events: none;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            animation: rotate 20s linear infinite;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer - Fixed in place */
+        .footer {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            right: 40px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #333;
+            z-index: 2;
+        }
+
+        .company-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transport-links {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .transport-links a {
+            color: #333;
+            text-decoration: underline;
+            margin-right: 15px;
+        }
+
+        .transport-links a:hover {
+            color: #666;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            min-height: 750vh;
+            background-color: #e8e8e8;
+            position: relative;
+        }
+
+        .gallery-spacer {
+            height: 50vh;
+            position: relative;
+        }
+
+        /* Fixed image overlay */
+        .image-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .scroll-image {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: linear-gradient(135deg, #d4d4d4, #f0f0f0);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .scroll-image.visible {
+            display: flex;
+        }
+
+        .scroll-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: 60px;
+                margin: 0;
+                margin-left: 0;
+            }
+            
+            .left-section, .right-section {
+                padding: 0;
+            }
+            
+            .right-section {
+                order: -1;
+            }
+            
+            .service-buttons {
+                gap: 8px;
+                margin-bottom: 30px;
+            }
+            
+            .scroll-image {
+                width: 70vw;
+                height: 70vw;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .logo {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .home-section {
+                padding: 20px;
+            }
+            
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .right-section {
+                order: -1;
+                padding-left: 0;
+            }
+            
+            .left-section {
+                padding-right: 0;
+            }
+            
+            .menuiserie-section h2 {
+                margin-bottom: 15px;
+            }
+            
+            .service-buttons {
+                gap: 8px;
+                margin-bottom: 30px;
+            }
+            
+            .service-pill {
+                padding: 8px 16px;
+                font-size: 14px;
+                border-radius: 20px;
+            }
+            
+            .logo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .scroll-image {
+                width: 80vw;
+                height: 80vw;
+            }
+            
+            .footer {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                flex-direction: column;
+                gap: 10px;
+                font-size: 12px;
+            }
+            
+            .company-info {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .transport-links {
+                font-size: 10px;
+            }
+
+            .gallery-section {
+                min-height: 500vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Section -->
+    <section class="home-section">
+        <div class="logo-container">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 422.3 422.3">
+                    <style>
+                        .cls-1 { fill: #1b2f1d; }
+                        .cls-2 { fill: #b3ea5c; }
+                    </style>
+                    <circle class="cls-1" cx="211.15" cy="211.15" r="211.15"/>
+                    <g>
+                        <polygon class="cls-2" points="249.06 173.59 274.82 185.47 254.17 127.35 308.82 106.46 285.24 95.57 238.89 113.37 253.79 81.07 234.62 72.22 198.59 150.31 217.77 159.16 232.34 127.58 249.06 173.59"/>
+                        <polygon class="cls-2" points="260.2 231.14 284.99 254.73 259.03 282.03 234.23 258.44 219.6 273.83 281.9 333.09 296.54 317.71 272.17 294.52 298.13 267.23 322.5 290.41 337.06 275.11 274.75 215.84 260.2 231.14"/>
+                        <path class="cls-2" d="M189.87,258.79c-2.7-4.37-6.42-8.77-11.18-13.22-4.78-4.48-9.43-7.91-13.96-10.3-4.52-2.39-9.02-3.65-13.49-3.77-4.47-.13-8.9.91-13.29,3.11-4.38,2.2-8.77,5.65-13.17,10.35l-24.82,26.53-10.35,11.06,15.51,14.51,10.31-11.02,24.74-26.44c2.32-2.48,4.6-4.36,6.85-5.65,2.25-1.29,4.48-2,6.7-2.15,2.22-.14,4.45.29,6.71,1.31,2.26,1.02,4.52,2.59,6.8,4.72,2.28,2.13,3.99,4.28,5.14,6.45,1.15,2.17,1.73,4.37,1.75,6.61.02,2.23-.54,4.52-1.68,6.84-1.14,2.33-2.87,4.73-5.18,7.21l-24.74,26.44-10.31,11.02,15.46,14.47,10.35-11.06,24.82-26.52c4.4-4.7,7.56-9.3,9.48-13.81,1.92-4.5,2.67-8.99,2.24-13.44-.42-4.46-1.98-8.87-4.68-13.23Z"/>
+                        <polygon class="cls-2" points="161.18 203 168.7 183.21 104.05 158.67 114.93 130.01 99.18 124.03 69.89 201.2 85.64 207.18 96.54 178.47 161.18 203"/>
+                        <rect class="cls-2" x="330.14" y="148.38" width="17.08" height="40.6" transform="translate(107.19 467.97) rotate(-78.75)"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="left-section">
+                <div class="definition">
+                    <h1 class="word-title">Cahute <span class="pronunciation">\ka.yt\</span></h1>
+                    <p class="word-meaning">Petite loge, hutte, cabane, maisonnette</p>
+                    <p class="poetry">
+                        Dans la cahute, le bois devient refuge,<br>
+                        façonné pour offrir chaleur et sérénité.
+                    </p>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="menuiserie-section">
+                    <h2>Menuiserie</h2>
+                    <div class="service-buttons">
+                        <span class="service-pill">Agencement</span>
+                        <span class="service-pill">Cuisine</span>
+                        <span class="service-pill">Escalier</span>
+                        <span class="service-pill">Mobilier</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="company-info">
+                <div>
+                    <strong>Bruno Lenherr</strong><br>
+                    Menuisier
+                </div>
+                <div style="margin-top: 10px;">
+                    bruno@k-hut.ch<br>
+                    079 317 95 27
+                </div>
+                <div style="margin-top: 20px;">
+                    <strong>K-Hut Sàrl</strong><br>
+                    Rue Saint-Martin 38bis<br>
+                    1005 Lausanne VD
+                </div>
+                <div class="transport-links">
+                    Itinéraire<br>
+                    <a href="#">A pied</a> - <a href="#">A vélo</a> - <a href="#">En transport publique</a> - <a href="#">En voiture</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="gallery-spacer" data-image="0"></div>
+        <div class="gallery-spacer" data-image="1"></div>
+        <div class="gallery-spacer" data-image="2"></div>
+        <div class="gallery-spacer" data-image="3"></div>
+        <div class="gallery-spacer" data-image="4"></div>
+        <div class="gallery-spacer" data-image="5"></div>
+        <div class="gallery-spacer" data-image="6"></div>
+        <div class="gallery-spacer" data-image="7"></div>
+        <div class="gallery-spacer" data-image="8"></div>
+        <div class="gallery-spacer" data-image="9"></div>
+        <div class="gallery-spacer" data-image="10"></div>
+        <div class="gallery-spacer" data-image="11"></div>
+        <div class="gallery-spacer" data-image="12"></div>
+        <div class="gallery-spacer" data-image="13"></div>
+        <div class="gallery-spacer" data-image="14"></div>
+    </section>
+
+    <!-- Fixed Image Overlay -->
+    <div class="image-overlay">
+        <div class="scroll-image" data-index="0"><div>Cuisine Moderne</div></div>
+        <div class="scroll-image" data-index="1"><div>Escalier Bois</div></div>
+        <div class="scroll-image" data-index="2"><div>Mobilier Sur Mesure</div></div>
+        <div class="scroll-image" data-index="3"><div>Agencement</div></div>
+        <div class="scroll-image" data-index="4"><div>Place de Jeux</div></div>
+        <div class="scroll-image" data-index="5"><div>Chambre Enfant</div></div>
+        <div class="scroll-image" data-index="6"><div>Bureau Custom</div></div>
+        <div class="scroll-image" data-index="7"><div>Salle de Bain</div></div>
+        <div class="scroll-image" data-index="8"><div>Dressing</div></div>
+        <div class="scroll-image" data-index="9"><div>Terrasse Bois</div></div>
+        <div class="scroll-image" data-index="10"><div>Charpente</div></div>
+        <div class="scroll-image" data-index="11"><div>Rénovation</div></div>
+        <div class="scroll-image" data-index="12"><div>Bibliothèque</div></div>
+        <div class="scroll-image" data-index="13"><div>Pergola</div></div>
+        <div class="scroll-image" data-index="14"><div>Atelier</div></div>
+    </div>
+
+
+
+    <script>
+        const images = document.querySelectorAll('.scroll-image');
+        const gallerySection = document.querySelector('.gallery-section');
+
+        function updateOnScroll() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const galleryStart = windowHeight;
+            const galleryHeight = gallerySection.offsetHeight;
+
+            // Auto-reset when reaching the very end - INSTANT JUMP, NO ANIMATION
+            // Check if we've scrolled to within 100px of the bottom
+            if (scrollY + windowHeight >= documentHeight - 100) {
+                window.scrollTo(0, 0); // Instant jump to top
+                return;
+            }
+
+            // Update image visibility - equal scroll distance for each image
+            images.forEach((image, index) => {
+                const scrollDistancePerImage = windowHeight * 0.5;
+                let imageStart, imageEnd;
+                
+                if (index === 0) {
+                    // First image appears early
+                    imageStart = galleryStart - windowHeight * 0.8;
+                    imageEnd = galleryStart + scrollDistancePerImage;
+                } else {
+                    // All other images get equal scroll distance
+                    imageStart = galleryStart + ((index - 1) * scrollDistancePerImage);
+                    imageEnd = galleryStart + (index * scrollDistancePerImage) + scrollDistancePerImage;
+                }
+                
+                if (scrollY >= imageStart && scrollY < imageEnd) {
+                    image.classList.add('visible');
+                } else {
+                    image.classList.remove('visible');
+                }
+            });
+        }
+
+        // Scroll event
+        window.addEventListener('scroll', updateOnScroll);
+
+        // Service pills - no interactions needed anymore
+
+        // Load images from JSON
+        async function loadImages() {
+            try {
+                const response = await fetch('images.json');
+                const data = await response.json();
+                
+                data.images.forEach((imageData, index) => {
+                    if (index < images.length && (imageData.url || typeof imageData === 'string')) {
+                        const img = document.createElement('img');
+                        img.src = imageData.url || imageData;
+                        img.alt = imageData.title || `Project ${index + 1}`;
+                        
+                        images[index].innerHTML = '';
+                        images[index].appendChild(img);
+                    }
+                });
+                
+            } catch (error) {
+                console.log('Using placeholder images');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadImages();
+            updateOnScroll();
+        });
+    </script>
+</body>
+</html>
