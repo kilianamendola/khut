@@ -159,6 +159,11 @@
         .company-info {
             display: flex;
             flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-person, .company-details {
+            display: inline-block;
         }
 
         .transport-links {
@@ -317,13 +322,15 @@
             }
             
             .company-info {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                align-items: start;
             }
             
             .transport-links {
                 font-size: 10px;
+                grid-column: 1 / -1;
             }
 
             .gallery-section {
@@ -381,15 +388,13 @@
 
         <div class="footer">
             <div class="company-info">
-                <div>
+                <div class="contact-person">
                     <strong>Bruno Lenherr</strong><br>
-                    Menuisier
-                </div>
-                <div style="margin-top: 10px;">
+                    Menuisier<br>
                     bruno@k-hut.ch<br>
                     079 317 95 27
                 </div>
-                <div style="margin-top: 20px;">
+                <div class="company-details">
                     <strong>K-Hut Sàrl</strong><br>
                     Rue Saint-Martin 38bis<br>
                     1005 Lausanne VD
