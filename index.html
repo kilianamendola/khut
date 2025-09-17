@@ -32,7 +32,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            padding: 40px;
+            padding: 24px;
             z-index: 1;
             background-color: #e8e8e8;
         }
@@ -43,9 +43,9 @@
             margin-left: 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 100px;
+            gap: 0;
             align-items: start;
-            min-height: 80vh;
+            min-height: auto;
         }
 
         .left-section {
@@ -53,11 +53,14 @@
         }
 
         .right-section {
-            padding-left: 40px;
+            padding-left: 0;
+            margin: 0;
+            padding: 0;
         }
 
         .definition {
-            margin-bottom: 40px;
+            margin: 0;
+            padding: 0;
         }
 
         .word-title {
@@ -75,7 +78,7 @@
         .word-meaning {
             font-size: 12px;
             color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 0;
             font-style: italic;
         }
 
@@ -83,7 +86,12 @@
             font-size: 14px;
             color: #333;
             line-height: 1.8;
-            margin-bottom: 50px;
+            margin-bottom: 0;
+        }
+
+        .menuiserie-section {
+            margin: 0;
+            padding: 0;
         }
 
         .menuiserie-section h2 {
@@ -98,7 +106,7 @@
             flex-direction: row;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 50px;
+            margin-bottom: 0;
         }
 
         .service-pill {
@@ -111,6 +119,7 @@
             display: inline-block;
             position: relative;
             z-index: 20;
+            margin: 0;
         }
 
         /* Logo - ALWAYS VISIBLE */
@@ -146,9 +155,9 @@
         /* Footer - Fixed in place */
         .footer {
             position: fixed;
-            bottom: 40px;
-            left: 40px;
-            right: 40px;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
             display: flex;
             justify-content: space-between;
             font-size: 14px;
@@ -229,14 +238,12 @@
             object-fit: cover;
         }
 
-
-
         /* Responsive */
         @media (max-width: 1200px) {
             .container {
                 display: flex;
                 flex-direction: column;
-                gap: 60px;
+                gap: 0;
                 margin: 0;
                 margin-left: 0;
             }
@@ -261,64 +268,103 @@
         }
 
         @media (max-width: 1024px) {
-            .logo {
-                display: none;
+            * {
+                margin: 0;
+                padding: 0;
             }
-        }
-
-        @media (max-width: 768px) {
+            
             .home-section {
-                padding: 20px;
+                padding: 24px;
+                line-height: 1;
             }
             
             .container {
                 display: flex;
                 flex-direction: column;
-                gap: 30px;
+                line-height: 1;
+                padding: 0;
+                margin: 0;
+                min-height: auto;
             }
             
             .right-section {
-                order: -1;
-                padding-left: 0;
+                display: block;
+                line-height: 1;
+                margin: 0 0 16px 0;
+                padding: 0;
             }
             
             .left-section {
-                padding-right: 0;
+                display: block;
+                margin: 0;
+                padding: 0;
+                line-height: 1.4;
+            }
+            
+            .definition {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .menuiserie-section {
+                margin: 0;
+                padding: 0;
             }
             
             .menuiserie-section h2 {
-                margin-bottom: 15px;
+                font-size: 18px;
+                margin: 0 0 8px 0;
+                padding: 0;
+                line-height: 1;
             }
             
             .service-buttons {
-                gap: 8px;
-                margin-bottom: 30px;
+                margin: 0;
+                padding: 0;
+                line-height: 1;
             }
             
             .service-pill {
                 padding: 8px 16px;
                 font-size: 14px;
-                border-radius: 20px;
+                border-radius: 18px;
+                line-height: 1;
+                margin: 0;
+            }
+            
+            .word-title {
+                line-height: 1.4;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .word-meaning {
+                line-height: 1.5;
+                margin: 0 0 8px 0;
+                padding: 0;
+            }
+            
+            .poetry {
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
             }
             
             .logo {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .scroll-image {
-                width: 80vw;
-                height: 80vw;
+                width: 180px;
+                height: 180px;
+                top: 60%;
             }
             
             .footer {
                 position: fixed;
-                bottom: 20px;
-                left: 20px;
-                right: 20px;
+                bottom: 24px;
+                left: 24px;
+                right: 24px;
                 flex-direction: column;
                 gap: 10px;
                 font-size: 12px;
+                line-height: 1.4;
             }
             
             .company-info {
@@ -326,15 +372,13 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 15px;
                 align-items: start;
+                line-height: 1.4;
             }
             
             .transport-links {
                 font-size: 10px;
                 grid-column: 1 / -1;
-            }
-
-            .gallery-section {
-                min-height: 500vh;
+                line-height: 1.5;
             }
         }
     </style>
@@ -377,9 +421,11 @@
                 <div class="menuiserie-section">
                     <h2>Menuiserie</h2>
                     <div class="service-buttons">
+                        <span class="service-pill">Conception</span>
+                        <span class="service-pill">Fabrication</span>
+                        <span class="service-pill">Rénovation</span>
                         <span class="service-pill">Agencement</span>
                         <span class="service-pill">Cuisine</span>
-                        <span class="service-pill">Escalier</span>
                         <span class="service-pill">Mobilier</span>
                     </div>
                 </div>
@@ -401,7 +447,7 @@
                 </div>
                 <div class="transport-links">
                     Itinéraire<br>
-                    <a href="#">A pied</a> - <a href="#">A vélo</a> - <a href="#">En transport publique</a> - <a href="#">En voiture</a>
+                    <a href="#">A pied</a> / <a href="#">A vélo</a> / <a href="#">En transport publique</a> / <a href="#">En voiture</a>
                 </div>
             </div>
         </div>
@@ -444,8 +490,6 @@
         <div class="scroll-image" data-index="13"><div>Pergola</div></div>
         <div class="scroll-image" data-index="14"><div>Atelier</div></div>
     </div>
-
-
 
     <script>
         const images = document.querySelectorAll('.scroll-image');
