@@ -189,6 +189,94 @@
         .transport-links a:hover {
             color: #666;
         }
+        
+        /* Simple scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            animation: bounce 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #e8e8e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            animation: rotate 8s linear infinite;
+        }
+
+        .loading-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .loading-image.active {
+            opacity: 1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile loading circle */
+        @media (max-width: 768px) {
+            .loading-circle {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .loading-screen {
+                align-items: flex-start;
+                padding-top: calc(50vh + 16px - 90px);
+                transform: translateY(-20px);
+            }
+        }
+
 
         /* Gallery Section */
         .gallery-section {
@@ -262,8 +350,8 @@
             }
             
             .scroll-image {
-                width: 70vw;
-                height: 70vw;
+                width: 85vw;
+                height: 85vw;
             }
         }
 
@@ -325,9 +413,9 @@
             }
             
             .service-pill {
-                padding: 8px 16px;
-                font-size: 14px;
-                border-radius: 18px;
+                padding: 6px 12px;
+                font-size: 13px;
+                border-radius: 15px;
                 line-height: 1;
                 margin: 0;
             }
@@ -353,7 +441,10 @@
             .logo {
                 width: 180px;
                 height: 180px;
-                top: 60%;
+            }
+            
+            .logo-container {
+                top: calc(50% + 16px);
             }
             
             .footer {
@@ -380,10 +471,27 @@
                 grid-column: 1 / -1;
                 line-height: 1.5;
             }
+            
+            .scroll-indicator {
+                bottom: 168px;
+                font-size: 12px;
+            }
+            
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-circle">
+            <img src="images/loading/01.webp" alt="Loading" class="loading-image active">
+            <img src="images/loading/02.webp" alt="Loading" class="loading-image">
+            <img src="images/loading/03.webp" alt="Loading" class="loading-image">
+            <img src="images/loading/04.webp" alt="Loading" class="loading-image">
+            <img src="images/loading/05.webp" alt="Loading" class="loading-image">
+        </div>
+    </div>
+
     <!-- Home Section -->
     <section class="home-section">
         <div class="logo-container">
@@ -451,6 +559,12 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Simple scroll indicator -->
+        <div class="scroll-indicator">
+            Voir les projets ↓
+        </div>
+
     </section>
 
     <!-- Gallery Section -->
@@ -470,6 +584,7 @@
         <div class="gallery-spacer" data-image="12"></div>
         <div class="gallery-spacer" data-image="13"></div>
         <div class="gallery-spacer" data-image="14"></div>
+        
     </section>
 
     <!-- Fixed Image Overlay -->
@@ -503,8 +618,12 @@
             const galleryHeight = gallerySection.offsetHeight;
 
             // Auto-reset when reaching the very end - INSTANT JUMP, NO ANIMATION
-            // Check if we've scrolled to within 100px of the bottom
-            if (scrollY + windowHeight >= documentHeight - 100) {
+            // Only reset after all images have been shown and we're truly at the bottom
+            const lastImageIndex = images.length - 1;
+            const scrollDistancePerImage = windowHeight * 0.5;
+            const lastImageEnd = galleryStart + (lastImageIndex * scrollDistancePerImage) + scrollDistancePerImage + (windowHeight * 0.5);
+            
+            if (scrollY >= lastImageEnd) {
                 window.scrollTo(0, 0); // Instant jump to top
                 return;
             }
@@ -532,8 +651,7 @@
             });
         }
 
-        // Scroll event
-        window.addEventListener('scroll', updateOnScroll);
+        // Scroll event (consolidated with pill updates)
 
         // Service pills - no interactions needed anymore
 
@@ -559,10 +677,59 @@
             }
         }
 
+
+        // Simple scroll indicator functionality
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        
+        function updateScrollIndicator() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            // Hide indicator when scrolling starts
+            if (scrollY > windowHeight * 0.3) {
+                if (scrollIndicator) scrollIndicator.style.display = 'none';
+            } else {
+                if (scrollIndicator) scrollIndicator.style.display = 'block';
+            }
+        }
+
+        // Scroll event
+        window.addEventListener('scroll', function() {
+            updateOnScroll();
+            updateScrollIndicator();
+        });
+
+        // Loading Screen Animation
+        function startLoadingAnimation() {
+            const loadingImages = document.querySelectorAll('.loading-image');
+            let currentIndex = 0;
+            
+            // Cycle through images quickly
+            const imageInterval = setInterval(() => {
+                loadingImages[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % loadingImages.length;
+                loadingImages[currentIndex].classList.add('active');
+            }, 300); // Change every 300ms (5 images * 300ms = 1500ms total)
+            
+            // Hide loading screen after 1600ms (1800ms total - 200ms fade = 1600ms)
+            setTimeout(() => {
+                clearInterval(imageInterval);
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                
+                // Remove loading screen from DOM after animation
+                setTimeout(() => {
+                    loadingScreen.remove();
+                }, 200);
+            }, 1600);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            startLoadingAnimation();
             loadImages();
             updateOnScroll();
+            updateScrollIndicator();
         });
     </script>
 </body>
