@@ -757,6 +757,9 @@
 
         // Loading Screen Animation
         function startLoadingAnimation() {
+            // Prevent scrolling during loading
+            document.body.style.overflow = 'hidden';
+            
             const loadingImages = document.querySelectorAll('.loading-image');
             let currentIndex = 0;
             
@@ -772,6 +775,9 @@
                 clearInterval(imageInterval);
                 const loadingScreen = document.getElementById('loadingScreen');
                 loadingScreen.classList.add('hidden');
+                
+                // Re-enable scrolling
+                document.body.style.overflow = '';
                 
                 // Remove loading screen from DOM after animation
                 setTimeout(() => {
